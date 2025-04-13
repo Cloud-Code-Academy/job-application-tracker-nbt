@@ -1,0 +1,23 @@
+<template>
+    <lightning-card  title="Paycheck Breakdown Calculator">
+        <!-- Process -->
+        <lightning-button variant="brand" label="Calculate" title="Calculate" slot="actions" onclick={calculateAnnualSalary}></lightning-button>
+        <!-- Input Information -->
+        <div class="slds-p-horizontal_small">
+            <lightning-input 
+                type="number" 
+                name="grossSalary" 
+                label="Gross Salary"
+                value={grossSalary} 
+            ></lightning-input>
+        </div>
+        <!-- Display Results -->
+        <p slot="footer">Annual Salary: <span style="color:green">{annualSalary}</span></p>
+        <p slot="footer">6 Months Salary: <span style="color:green">{sixMonthsSalary}</span></p>
+        <p slot="footer">Monthly Salary: <span style="color:green">{monthlySalary}</span></p>
+        <p slot="footer">Bi-Weekly Salary: <span style="color:green">{biWeeklySalary}</span></p>
+        <p slot="footer">Federal Tax: <span style="color:red">{federalTax}</span></p>
+        <p slot="footer">Medicare Tax: <span style="color:red">{medicareTax}</span></p>
+        <p slot="footer">Social Security Tax: <span style="color:red">{socialSecurityTax}</span></p>
+    </lightning-card>
+</template>
