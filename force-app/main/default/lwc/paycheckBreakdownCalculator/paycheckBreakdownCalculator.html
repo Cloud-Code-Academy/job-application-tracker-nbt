@@ -13,12 +13,70 @@
             ></lightning-input>
         </div>
         <!-- Display Results -->
-        <p slot="footer">Annual Salary: <span style="color:green">{annualSalary}</span></p>
-        <p slot="footer">6 Months Salary: <span style="color:green">{sixMonthsSalary}</span></p>
-        <p slot="footer">Monthly Salary: <span style="color:green">{monthlySalary}</span></p>
-        <p slot="footer">Bi-Weekly Salary: <span style="color:green">{biWeeklySalary}</span></p>
-        <p slot="footer">Federal Income Tax: <span style="color:red">{federalIncomeTax}</span></p>
-        <p slot="footer">Medicare Tax: <span style="color:red">{medicareTax}</span></p>
-        <p slot="footer">Social Security Tax: <span style="color:red">{socialSecurityTax}</span></p>
+        <div slot="footer" class="slds-text-align_left">
+                <p>
+                    <span class="resultFields">Annual Salary: </span>
+                    <lightning-formatted-number 
+                        value={annualSalary} 
+                        format-style="currency" 
+                        currency-code="USD"
+                        class="salaryResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">6 Months Salary: </span>
+                    <lightning-formatted-number 
+                        value={sixMonthsSalary} 
+                        format-style="currency" 
+                        currency-code="USD"
+                        class="salaryResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">Monthly Salary: </span>                        
+                    <lightning-formatted-number 
+                    value={monthlySalary} 
+                    format-style="currency" 
+                    currency-code="USD"
+                    class="salaryResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">Bi-Weekly Salary: </span>                        
+                    <lightning-formatted-number 
+                    value={biWeeklySalary} 
+                    format-style="currency" 
+                    currency-code="USD"
+                    class="salaryResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">Federal Income Tax: </span>                        
+                    <lightning-formatted-number 
+                    value={federalIncomeTax} 
+                    format-style="currency" 
+                    currency-code="USD"
+                    class="taxResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">Medicare: </span>                        
+                    <lightning-formatted-number 
+                    value={medicareTax} 
+                    format-style="currency" 
+                    currency-code="USD"
+                    class="taxResultText">
+                    </lightning-formatted-number>
+                </p>
+                <p>
+                    <span class="resultFields">Social Security: </span>                        
+                    <lightning-formatted-number 
+                    value={socialSecurityTax} 
+                    format-style="currency" 
+                    currency-code="USD"
+                    class="taxResultText">
+                    </lightning-formatted-number>
+                </p>
+        </div>
     </lightning-card>
 </template>

@@ -1,0 +1,11 @@
+.resultFields {
+    font-weight: bold;
+}
+
+.salaryResultText {
+    color: green;
+}
+
+.taxResultText {
+    color: red;
+}
