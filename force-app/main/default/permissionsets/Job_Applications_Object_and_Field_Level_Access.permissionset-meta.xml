@@ -37,6 +37,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Job_Application__c.Jooble_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Job_Application__c.Location__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -58,6 +63,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Job_Application__c.Rating__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Job_Application__c.Salary_Range__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -101,10 +111,6 @@
     </tabSettings>
     <tabSettings>
         <tab>Job_Application__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>standard-SemanticModel</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>
