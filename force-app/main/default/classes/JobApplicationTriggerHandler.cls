@@ -9,7 +9,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         this.newJobApplicationMap = (Map<Id, Job_Application__c>) Trigger.newMap;
         this.oldJobApplications = (List<Job_Application__c>) Trigger.old;
         this.oldJobApplicationMap = (Map<Id, Job_Application__c>) Trigger.oldMap;
-        }
+    }
     
         public override void afterInsert() {    
             createTasks();
