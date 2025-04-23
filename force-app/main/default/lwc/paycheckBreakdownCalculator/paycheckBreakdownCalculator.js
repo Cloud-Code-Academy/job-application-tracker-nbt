@@ -2,13 +2,13 @@ import { LightningElement } from 'lwc';
 
 // Const object to store federal tax rates for 2025
 const federalTaxRates = Object.freeze([
-    {lowerRange: 0, upperRange: 11925, rate: 0.10},
-    {lowerRange: 11925, upperRange: 48475, rate: 0.12},
-    {lowerRange: 48475, upperRange: 103350, rate: 0.22},
-    {lowerRange: 103350, upperRange: 197300, rate: 0.24},
-    {lowerRange: 197300, upperRange: 250525, rate: 0.32},
-    {lowerRange: 250525, upperRange: 626350, rate: 0.35},
-    {lowerRange: 626350, upperRange: Infinity, rate: 0.37},
+    {lowerBound: 0, upperBound: 11925, rate: 0.10},
+    {lowerBound: 11925, upperBound: 48475, rate: 0.12},
+    {lowerBound: 48475, upperBound: 103350, rate: 0.22},
+    {lowerBound: 103350, upperBound: 197300, rate: 0.24},
+    {lowerBound: 197300, upperBound: 250525, rate: 0.32},
+    {lowerBound: 250525, upperBound: 626350, rate: 0.35},
+    {lowerBound: 626350, upperBound: Infinity, rate: 0.37},
 ]);
 // Initialize other constant variables
 const socialSecurityTaxRate = 0.0620;
@@ -48,8 +48,8 @@ export default class PaycheckBreakdownCalculator extends LightningElement {
 
         // Loop through each federal tax bracket to calculate the tax for necessary ranges
         for (let taxBracket of federalTaxRates) {
-            if (adjustedGrossSalary > taxBracket.lowerRange) {
-                federalTaxAmount = (Math.min(adjustedGrossSalary, taxBracket.upperRange) - taxBracket.lowerRange) * taxBracket.rate;
+            if (adjustedGrossSalary > taxBracket.lowerBound) {
+                federalTaxAmount = (Math.min(adjustedGrossSalary, taxBracket.upperBound) - taxBracket.lowerBound) * taxBracket.rate;
                 this.federalIncomeTax += federalTaxAmount;
             }
         }
