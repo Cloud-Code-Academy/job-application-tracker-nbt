@@ -1,0 +1,13 @@
+public with sharing class JobListingsCalloutMock implements HttpCalloutMock {
+    // Implement this interface method
+    public HTTPResponse respond(HTTPRequest request) {
+        // Create a mock response
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Content-Type', 'application/json');
+        response.setBody('{"totalCount": 3,"jobs": [{"title": "Developer","location": "Canada","snippet": "qualification:- Minimum:  Bachelors degree in computer science  , IT or relevant field Experience:-5 years+ IT experience -3 years+ NetSuite experience  Qualifications: - Strong understanding of NetSuite core modules (Financials, CRM, Inventory,...","salary": "","source": "catsone.com","type": "","link": "https://jooble.org/desc/7004741214002539643?ckey=Salesforce+developer&rgn=55130&pos=1&groupId=40906&elckey=-2917277278594375864&p=1&aq=-5596530900403928289&cid=4850&jobAge=2290&brelb=100&bscr=7.9279532&scr=7.9279532","company": "Evlv","updated": "2025-01-16T00:00:00.0000000","id": 7004741214002539643},{"title": "Senior ETL Developer - Remote","location": "Canada","snippet": "&nbsp;...want to be part of an inclusive, adaptable, and forward-thinking organization, apply now. We are currently seeking a  Senior ETL <b>Developer </b>- Remote  to join our team in  Halifax  ,  Nova Scotia (CA-NS) ,  Canada (CA) . Job Overview: Perform Data analysis,...&nbsp;","salary": "","source": "careers-inc.nttdata.com","type": "","link": "https://jooble.org/desc/7507094901856051717?ckey=Salesforce+developer&rgn=55130&pos=2&groupId=40906&elckey=-2917277278594375864&p=1&aq=-5596530900403928289&cid=4850&jobAge=250&brelb=100&bscr=7.9279532&scr=7.9279532","company": "NTT DATA, Inc.","updated": "2025-04-11T11:23:40.0260501+00:00","id": 7507094901856051717},{"title": "Azure Cloud Developer","location": "Canada","snippet": "&nbsp;...Design and implement secure Azure cloud architectures, ensuring compliance with industry standards and best practices.   <b>Develop </b>and enforce governance policies for Azure resources, focusing on identity management and access control.    Collaborate with cross...&nbsp;","salary": "","source": "ceipal.com","type": "","link": "https://jooble.org/desc/-7959297114912881060?ckey=Salesforce+developer&rgn=55130&pos=3&groupId=40906&elckey=-2917277278594375864&p=1&aq=-5596530900403928289&cid=4850&jobAge=130&brelb=100&bscr=7.9279532&scr=7.9279532","company": "ExcelGens, Inc.","updated": "2025-04-16T16:48:17.3139728+00:00","id": -7959297114912881060}]}');
+        response.setStatusCode(200);
+        return response;
+    }
+
+    
+}
