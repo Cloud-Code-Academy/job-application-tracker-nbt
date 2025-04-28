@@ -19,8 +19,8 @@ public class EventTriggerHandler extends TriggerHandler{
     public override void beforeUpdate() {
         validateNoOverlappingEvents(this.newEvents);
     }
-    
-        
+
+       
     public static void validateNoOverlappingEvents(List<Event> newEvents) {
         // Gather all OwnerIds from the new events
         Set<Id> ownerIds = new Set<Id>();

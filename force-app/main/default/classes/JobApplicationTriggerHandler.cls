@@ -1,9 +1,11 @@
 public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
+    // Variables to store new and old versions of Job_Application__c records and their maps by ID.
     private List<Job_Application__c> newJobApplications;
     private Map<Id, Job_Application__c> newJobApplicationMap;
     private List<Job_Application__c> oldJobApplications;
     private Map<Id, Job_Application__c> oldJobApplicationMap;
 
+    // Initialize the new and old record lists and maps using Trigger.new, Trigger.old, and their corresponding maps.
     public JobApplicationTriggerHandler() {
         this.newJobApplications = (List<Job_Application__c>) Trigger.new;
         this.newJobApplicationMap = (Map<Id, Job_Application__c>) Trigger.newMap;
@@ -13,9 +15,11 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
 
     public override void beforeInsert() {
         JobApplicationSalaryHelper.calculateSalaryAndTaxOnInsert(this.newJobApplications);
+        setPrimaryContacts(this.newJobApplications);
     }
     public override void beforeUpdate() {
         JobApplicationSalaryHelper.calculateSalaryAndTaxOnUpdate(this.newJobApplications, this.oldJobApplicationMap);
+        setPrimaryContacts(this.newJobApplications);
     }
     public override void afterInsert() {    
         createTasks(false); // No need to compare old and new — just create tasks
@@ -23,11 +27,15 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
     public override void afterUpdate() {    
         createTasks(true); // Compare old and new status
     }
+    public override void afterUndelete() {    
+        createTasks(false); // No need to compare old and new — just create tasks
+    }
 
 public void createTasks(Boolean checkStatusChange) {
     List<Job_Application__c> jobApplicationsList = new List<Job_Application__c>();
     List<Task> tasksToInsert = new List<Task>();
 
+    // Loop through the job applications and add them to a task creation list.  For those with no old Triggers, no need to check if status changed.
     for (Job_Application__c jobApp : newJobApplications) {
         if (checkStatusChange) {
             Job_Application__c oldJobApp = oldJobApplicationMap.get(jobApp.Id);
@@ -38,21 +46,24 @@ public void createTasks(Boolean checkStatusChange) {
             jobApplicationsList.add(jobApp);
         }
     }
-
+    // If the list is Of job applications is not empty then Create tasks
     if(!jobApplicationsList.isEmpty()) {
         tasksToInsert = createTasksForStatus(jobApplicationsList);
     }
 
+    // Insert tasks if applicable
     if (!tasksToInsert.isEmpty()) {
         insert tasksToInsert;
     }
 
 }
 
+// Method to create tasks based on job application status
 public List<Task> createTasksForStatus(List<Job_Application__c> jobAppList) {
     List<Task> tasks = new List<Task>();
     Date dueDate = Date.today().addDays(1); // Default due date = tomorrow
 
+    // Map to show the status and the list of tasks to be created for each status
     Map<String, List<String>> taskMap = new Map<String, List<String>> {
         'Saved' => new List<String>{
             'Check if the job description aligns with your interests and values',
@@ -95,8 +106,8 @@ public List<Task> createTasksForStatus(List<Job_Application__c> jobAppList) {
         }
     };
 
+    // Create new task records
     for (Job_Application__c jobApp : jobAppList) {
-        Id whoId = jobApp.Primary_Contact__c; // Optional: link to a contact if available
         List<String> subjects = taskMap.get(jobApp.Status__c);
 
         if (subjects != null) {
@@ -107,12 +118,72 @@ public List<Task> createTasksForStatus(List<Job_Application__c> jobAppList) {
                     Status = 'Not Started',
                     ActivityDate = dueDate,
                     WhatId = jobApp.Id,
-                    WhoId = whoId
+                    WhoId = jobApp.Primary_Contact__c
                 ));
             }
         }
     }
-
+    
     return tasks;
+}
+
+private void setPrimaryContacts(List<Job_Application__c> jobApps) {
+    Set<Id> jobAppIds = new Set<Id>();
+    Set<Id> accountIds = new Set<Id>();
+    
+    for (Job_Application__c ja : jobApps) {
+        if (ja.Primary_Contact__c == null) {
+            jobAppIds.add(ja.Id);
+            if (ja.Company_Account__c != null) {
+                accountIds.add(ja.Company_Account__c);
+            }
+        }
+    }
+    
+    if (jobAppIds.isEmpty()) return;
+    
+    // Query related Job Application Contacts
+    Map<Id, List<Contact>> jobAppContactsMap = new Map<Id, List<Contact>>();
+    for (Job_Application_Contact__c jac : [
+        SELECT Job_Application__c, Contact__r.Id
+        FROM Job_Application_Contact__c
+        WHERE Job_Application__c IN :jobAppIds
+        ORDER BY CreatedDate ASC
+    ]) {
+        if (!jobAppContactsMap.containsKey(jac.Job_Application__c)) {
+            jobAppContactsMap.put(jac.Job_Application__c, new List<Contact>());
+        }
+        jobAppContactsMap.get(jac.Job_Application__c).add(jac.Contact__r);
+    }
+    
+    // Query Account Contacts
+    Map<Id, List<Contact>> accountContactsMap = new Map<Id, List<Contact>>();
+    if (!accountIds.isEmpty()) {
+        for (Contact c : [
+            SELECT Id, AccountId
+            FROM Contact
+            WHERE AccountId IN :accountIds
+            ORDER BY CreatedDate ASC
+        ]) {
+            if (!accountContactsMap.containsKey(c.AccountId)) {
+                accountContactsMap.put(c.AccountId, new List<Contact>());
+            }
+            accountContactsMap.get(c.AccountId).add(c);
+        }
+    }
+    
+    // Set Primary Contact
+    for (Job_Application__c ja : jobApps) {
+        if (ja.Primary_Contact__c == null) {
+            if (jobAppContactsMap.containsKey(ja.Id) && !jobAppContactsMap.get(ja.Id).isEmpty()) {
+                ja.Primary_Contact__c = jobAppContactsMap.get(ja.Id).get(0).Id;
+            }
+            else if (ja.Company_Account__c != null &&
+                     accountContactsMap.containsKey(ja.Company_Account__c) &&
+                     !accountContactsMap.get(ja.Company_Account__c).isEmpty()) {
+                ja.Primary_Contact__c = accountContactsMap.get(ja.Company_Account__c).get(0).Id;
+            }
+        }
+    }
 }
 }
