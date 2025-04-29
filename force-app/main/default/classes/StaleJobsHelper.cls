@@ -1,11 +1,13 @@
-public with sharing class StaleJobHelper {
+public with sharing class StaleJobsHelper {
 
     public void cleanupStaleJobApplications() {
-        // Query jobs that have a follow up date 30 days old or more and status not closed or accepted
+        // Query jobs that don't have a status of closed or accepted
+        List<String> statuses = new List<String>{'Closed', 'Accepted'};
+        // Query jobs that have a follow up date 30 days old or more
         Date thirtyDaysOld = Date.today().addDays(-30);
-        List<Job_Application__c> jobApps = [SELECT Id, Status__c, Follow_up_date__c 
+        List<Job_Application__c> jobApps = [SELECT Id, Status__c, Follow_up_date__c, Notes__c
                                             FROM Job_Application__c 
-                                            WHERE (Status__c != 'Closed' OR Status__c != 'Accepted')
+                                            WHERE (Status__c NOT IN :statuses)
                                             AND (Follow_up_date__c <= :thirtyDaysOld)];
         // if no stale jobs, end
         if (jobApps.isEmpty()) {
