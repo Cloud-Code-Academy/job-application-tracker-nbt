@@ -1,4 +1,4 @@
-InterviewEmailReminderScheduler email = new InterviewEmailReminderScheduler();
+InterviewEmailReminderSchedulable email = new InterviewEmailReminderSchedulable();
 
 // Schedule email reminder to run once daily at 7AM
 String sch = '0 0 7 * * ?';
