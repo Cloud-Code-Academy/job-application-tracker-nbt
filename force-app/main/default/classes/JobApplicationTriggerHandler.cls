@@ -126,26 +126,31 @@ public List<Task> createTasksForStatus(List<Job_Application__c> jobAppList) {
     
     return tasks;
 }
-
+// Method to set Primary Contact
 private void setPrimaryContacts(List<Job_Application__c> jobApps) {
     Set<Id> jobAppIds = new Set<Id>();
     Set<Id> accountIds = new Set<Id>();
     
+    // If Primary contact is null, add job app Id's to the jobAppIds set
     for (Job_Application__c ja : jobApps) {
         if (ja.Primary_Contact__c == null) {
             jobAppIds.add(ja.Id);
+            // If there is an account associated with the job app, add the account Id to the accountIds set
             if (ja.Company_Account__c != null) {
                 accountIds.add(ja.Company_Account__c);
             }
         }
     }
     
-    if (jobAppIds.isEmpty()) return;
+    // Do nothing if the set of job app Id's is empty
+    if (jobAppIds.isEmpty()) {
+        return;
+    }
     
-    // Query related Job Application Contacts
     Map<Id, List<Contact>> jobAppContactsMap = new Map<Id, List<Contact>>();
+    // Get the Job App Ids and the related contact ids from junction object for any job app Id in the set and loop through each one
     for (Job_Application_Contact__c jac : [
-        SELECT Job_Application__c, Contact__r.Id
+        SELECT Job_Application__c, Contact__c
         FROM Job_Application_Contact__c
         WHERE Job_Application__c IN :jobAppIds
         ORDER BY CreatedDate ASC
