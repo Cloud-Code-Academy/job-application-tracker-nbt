@@ -9,18 +9,20 @@ public with sharing class StaleJobsHelper {
                                             FROM Job_Application__c 
                                             WHERE (Status__c NOT IN :statuses)
                                             AND (Follow_up_date__c <= :thirtyDaysOld)];
-        // if no stale jobs, end
+
+        // If no stale jobs, end process
         if (jobApps.isEmpty()) {
             System.debug('No stale jobs to cleanup');
             return;
         }
-        // initialize list and string
+
+        // Initialize list and string
         List<Job_Application__c> jobAppsToCleanup = new List<Job_Application__c>();
         String existingNotes = '';
 
         for (Job_Application__c job : jobApps) {
             job.Status__c = 'Closed';
-            // if there are existing notes, add a break after
+            // If there are existing notes, add a line break after
             if (job.Notes__c != null) {
                 existingNotes = job.Notes__c + '\n\n';
             }
