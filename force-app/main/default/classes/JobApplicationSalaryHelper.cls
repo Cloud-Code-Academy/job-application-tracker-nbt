@@ -72,6 +72,10 @@ public with sharing class JobApplicationSalaryHelper {
 
     public static void calculateSalaryAndTaxOnUpdate(List<Job_Application__c> newJobApps, Map<Id, Job_Application__c> oldJobAppsMap) {
         for (Job_Application__c jobApp : newJobApps) {
+            // If update, and salary field not filled, continue
+            if (jobApp.Salary__c == null) {
+                continue;
+            }
             // Only recalculate if salary or other related field is changed
             if (jobApp.Salary__c != oldJobAppsMap.get(jobApp.Id).Salary__c || 
                 jobApp.Medicare_Tax__c == oldJobAppsMap.get(jobApp.Id).Medicare_Tax__c ||

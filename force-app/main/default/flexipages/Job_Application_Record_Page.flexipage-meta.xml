@@ -158,6 +158,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>paycheckBreakdownCalculator</componentName>
+                <identifier>c_paycheckBreakdownCalculator</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>sidebartabs</value>
