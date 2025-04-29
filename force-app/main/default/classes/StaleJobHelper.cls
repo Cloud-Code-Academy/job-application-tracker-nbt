@@ -1,19 +1,28 @@
 public with sharing class StaleJobHelper {
 
     public void cleanupStaleJobApplications() {
+        // Query jobs that have a follow up date 30 days old or more and status not closed or accepted
         Date thirtyDaysOld = Date.today().addDays(-30);
         List<Job_Application__c> jobApps = [SELECT Id, Status__c, Follow_up_date__c 
                                             FROM Job_Application__c 
                                             WHERE (Status__c != 'Closed' OR Status__c != 'Accepted')
                                             AND (Follow_up_date__c <= :thirtyDaysOld)];
+        // if no stale jobs, end
         if (jobApps.isEmpty()) {
             System.debug('No stale jobs to cleanup');
             return;
         }
+        // initialize list and string
         List<Job_Application__c> jobAppsToCleanup = new List<Job_Application__c>();
+        String existingNotes = '';
+
         for (Job_Application__c job : jobApps) {
             job.Status__c = 'Closed';
-            job.Notes__c = 'Job Application was closed by an automated process on ' + Datetime.now().format();
+            // if there are existing notes, add a break after
+            if (job.Notes__c != null) {
+                existingNotes = job.Notes__c + '\n\n';
+            }
+            job.Notes__c = existingNotes + 'Job Application was closed by an automated process on ' + Datetime.now().format();
             jobAppsToCleanup.add(job);
         }
         try {
