@@ -1,9 +1,11 @@
 public class EventTriggerHandler extends TriggerHandler{
+    // Variables to store new and old versions of Event records and their maps by ID.
     private List<Event> newEvents;
     private Map<Id, Event> newEventMap;
     private List<Event> oldEvents;
     private Map<Id, Event> oldEventMap;
 
+    // Initialize the new and old record lists and maps using Trigger.new, Trigger.old, and their corresponding maps.
     public EventTriggerHandler() {
         this.newEvents = (List<Event>) Trigger.new;
         this.newEventMap = (Map<Id, Event>) Trigger.newMap;
@@ -20,7 +22,7 @@ public class EventTriggerHandler extends TriggerHandler{
         validateNoOverlappingEvents(this.newEvents);
     }
 
-       
+    // Method to check for overlapping Events
     public static void validateNoOverlappingEvents(List<Event> newEvents) {
         // Gather all OwnerIds from the new events
         Set<Id> ownerIds = new Set<Id>();
@@ -56,17 +58,19 @@ public class EventTriggerHandler extends TriggerHandler{
         ];
 
         // Check each new event for overlaps
+        // For each new event check if there is not start date time, end date time or owner, skip it
         for (Event newEv : newEvents) {
             if (newEv.StartDateTime == null || newEv.EndDateTime == null || newEv.OwnerId == null) {
                 continue;
             }
-
+            // For each existing event
             for (Event existingEv : existingEvents) {
                 // Skip self on update
                 if (!Trigger.isInsert && existingEv.Id == newEv.Id) {
                     continue;
                 }
 
+                // If both events have the same owner AND they overlap in time, add an error to the new event saying it overlaps. Stop checking others
                 if (existingEv.OwnerId == newEv.OwnerId &&
                     newEv.StartDateTime < existingEv.EndDateTime &&
                     newEv.EndDateTime > existingEv.StartDateTime) {
