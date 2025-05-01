@@ -56,10 +56,51 @@ public with sharing class JobListingsCallout implements Queueable, Database.Allo
             jobsToUpsert.add(j); //add job application to collection
 
         }
+        jobsToUpsert = upsertAccounts(jobsToUpsert); //call to another function to upsert accounts
         upsert jobsToUpsert Jooble_Id__c;//upsert using jooble id as external id
 
 
     }
-    
 
+    public static List<Job_Application__c> upsertAccounts(List<Job_Application__c> newJobApplications){
+        //Gather all company names, exclude duplicates
+        List<String> companyNames = new List<String>();
+        for (Job_Application__c ja : newJobApplications) {
+            if (!companyNames.contains(ja.Company_Name__c)) {
+                companyNames.add(ja.Company_Name__c);
+            }
+        }
+        //query accounts by Account name
+        List<Account> existingAccounts = [SELECT Id, Name FROM Account WHERE Name in :companyNames];
+        Map<String, Id> companyNameToId = new Map<String, Id>();//Create name to ID map to add AccountIds to Job Applications to Upsert
+        List<String> existingAccountNames = new List<String>();
+        //add existing account names to a list to exclude from account insert
+        for (Account a : existingAccounts) {
+            if (!existingAccountNames.contains(a.Name)) {
+                existingAccountNames.add(a.Name);
+                companyNameToId.put(a.Name, a.Id);
+            }
+        }
+        //add accounts to be inserted
+        List<Account> accountsToInsert = new List<Account>();
+        for (Job_Application__c ja2 : newJobApplications) {
+            if (ja2.Company_Name__c != null && !existingAccountNames.contains(ja2.Company_Name__c)) {
+                Account a = new Account();
+                a.Name = ja2.Company_Name__c;
+                accountsToInsert.add(a);
+            }
+        }
+        insert accountsToInsert;
+        //add Ids of inserted accounts to map
+        for (Account acc : accountsToInsert) {
+            companyNameToId.put(acc.Name, acc.Id);
+        }
+        //add accountIds to Job Application records in company account field
+        for (Job_Application__c ja3 : newJobApplications) {
+            ja3.Company_Account__c = companyNameToId.get(ja3.Company_Name__c);
+        }
+
+    
+        return newJobApplications;
+    }
 }
