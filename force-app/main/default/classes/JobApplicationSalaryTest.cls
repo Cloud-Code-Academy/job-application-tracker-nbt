@@ -141,7 +141,7 @@ public with sharing class JobApplicationSalaryTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(false, result.isSuccess(), 'Insert should fail for negative salary');
+        System.assertEquals(false, result.isSuccess(), 'Update should fail for negative salary');
     }
 
 
