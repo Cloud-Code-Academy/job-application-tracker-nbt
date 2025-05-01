@@ -14,6 +14,8 @@ public with sharing class JobApplicationSalaryTest {
         // Assert
         List<Job_Application__c> insertedJobApps = [SELECT Id, Name, Salary__c, Federal_Income_Tax__c, Social_Security_Tax__c, Medicare_Tax__c, Net_Salary__c FROM Job_Application__c WHERE Id IN :jobAppsToInsert];
 
+        Assert.isTrue(insertedJobApps.size() > 0, 'List should not be empty');
+
         for (Job_Application__c jobApps : insertedJobApps) {
             if (jobApps.Salary__c == null) {
                 Assert.areEqual(null, jobApps.Federal_Income_Tax__c, 'Federal Income Tax is incorrect');
@@ -63,6 +65,88 @@ public with sharing class JobApplicationSalaryTest {
             }
         }
     }
+
+    @IsTest
+    static void handleSalaryAutomation_salaryAndTaxFieldsPopulateOnUpdate_expectSuccess() {
+        // Arrange
+        List<Job_Application__c> jobAppsToInsert = TestDataFactory.createJobApplications(1);
+        insert jobAppsToInsert;
+
+        List<Job_Application__c> jobAppsToUpdate = [SELECT Id, Salary__c FROM Job_Application__c WHERE Id IN :jobAppsToInsert];
+        for (Job_Application__c jobApp : jobAppsToUpdate) {
+            if (jobApp.Salary__c == null) {
+                jobApp.Salary__c = 100000;
+            }
+            if (jobApp.Salary__c == 150000) {
+                jobApp.Salary__c = 200000;
+            }
+        }
+
+        // Act
+        Test.startTest();
+        update jobAppsToUpdate;
+        Test.stopTest();
+
+        // Assert
+        List<Job_Application__c> updatedJobApps = [SELECT Id, Name, Salary__c, Federal_Income_Tax__c, Social_Security_Tax__c, Medicare_Tax__c, Net_Salary__c FROM Job_Application__c WHERE Id IN :jobAppsToUpdate];
+
+        Assert.isTrue(updatedJobApps.size() > 0, 'List should not be empty');
+
+        for (Job_Application__c jobApps : updatedJobApps) {
+            if (jobApps.Salary__c == 100000) {
+                Assert.areEqual(13614.00, jobApps.Federal_Income_Tax__c, 'Federal Income Tax is incorrect');
+                Assert.areEqual(100000 * 0.062, jobApps.Social_Security_Tax__c, 'Social Security Tax is incorrect');
+                Assert.areEqual(100000 * 0.0145, jobApps.Medicare_Tax__c, 'Medicare Tax is incorrect');
+                Assert.areEqual(100000 - 13614.00 - (100000 * 0.062) - (100000 * 0.0145), jobApps.Net_Salary__c, 'Net Salary is incorrect');
+            } else if (jobApps.Salary__c == 200000) {
+                Assert.areEqual(37247.00, jobApps.Federal_Income_Tax__c, 'Federal Income Tax is incorrect');
+                Assert.areEqual(200000 * 0.062, jobApps.Social_Security_Tax__c, 'Social Security Tax is incorrect');
+                Assert.areEqual(200000 * 0.0145, jobApps.Medicare_Tax__c, 'Medicare Tax is incorrect');
+                Assert.areEqual(200000 - 37247.00 - (200000 * 0.062) - (200000 * 0.0145), jobApps.Net_Salary__c, 'Net Salary is incorrect');
+            }
+        }
+    }
+
+    @IsTest
+    static void handleSalaryAutomation_negativeSalaryOnInsert_expectFailure() {
+        // Arrange
+        Job_Application__c jobAppsToInsert = new Job_Application__c(
+            Name = 'Negative Salary Test',
+            Salary__c = -100000
+        );
+
+        // Act
+        Test.startTest();
+        Database.SaveResult result = Database.insert(jobAppsToInsert, false);
+        Test.stopTest();
+
+        // Assert
+        System.assertEquals(false, result.isSuccess(), 'Insert should fail for negative salary');
+    }
+
+    @IsTest
+    static void handleSalaryAutomation_negativeSalaryOnUpdate_expectFailure() {
+        // Arrange
+        Job_Application__c jobAppsToInsert = new Job_Application__c(
+            Name = 'Negative Salary Test',
+            Salary__c = 100000
+        );
+        insert jobAppsToInsert;
+
+        jobAppsToInsert.Salary__c = -200000;
+
+        // Act
+        Test.startTest();
+        Database.SaveResult result = Database.update(jobAppsToInsert, false);
+        Test.stopTest();
+
+        // Assert
+        System.assertEquals(false, result.isSuccess(), 'Insert should fail for negative salary');
+    }
+
+
+
+
 
 
 
