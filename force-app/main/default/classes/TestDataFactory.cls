@@ -5,16 +5,26 @@ public with sharing class TestDataFactory {
 
         for (Integer i = 0; i < numberOfJobApplications; i++) {
             jobApps.add(new Job_Application__c(
-                Name = 'Null Salary ' + i,
-                Salary__c = null
+                Name = 'Null Salary + Stale ' + i,
+                Salary__c = null,
+                Status__c = 'Saved',
+                Application_Date__c = Date.today().addDays(-40),
+                Follow_up_date__c = Date.today().addDays(-30)
             ));
             jobApps.add(new Job_Application__c(
-                Name = 'Zero Salary ' + i,
-                Salary__c = 0
+                Name = 'Zero Salary + Fresh' + i,
+                Salary__c = 0,
+                Status__c = 'Saved',
+                Application_Date__c = Date.today().addDays(-40),
+                Follow_up_date__c = Date.today().addDays(-20)
             ));
             jobApps.add(new Job_Application__c(
-                Name = '$15,000 Salary ' + i,
-                Salary__c = 15000
+                Name = '$15,000 Salary + Stale + Existing Notes' + i,
+                Salary__c = 15000,
+                Status__c = 'Saved',
+                Application_Date__c = Date.today().addDays(-40),
+                Follow_up_date__c = Date.today().addDays(-30),
+                Notes__c = 'These notes better still be here after I get updated'
             ));
             jobApps.add(new Job_Application__c(
                 Name = '$40,000 Salary ' + i,
