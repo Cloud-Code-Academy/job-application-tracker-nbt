@@ -43,4 +43,28 @@ public with sharing class TestDataFactory {
         }
         return jobApps;
     }
+
+    public static List<Event> createEvents(Integer numberOfEvents) {
+        List<Event> interviews = new List<Event>();
+        Date tomorrow = Date.today().addDays(1);
+        Datetime interviewStart = Datetime.newInstance(tomorrow, Time.newInstance(8, 0, 0, 0));
+
+        for (Integer i = 0; i < numberOfEvents; i++) {
+            interviews.add(new Event(
+                Subject = 'Interview',
+                StartDateTime = interviewStart,
+                EndDateTime = interviewStart.addHours(1),
+                Location = 'Zoom'
+            ));
+        }
+        return interviews;
+    }
+
+
+
+
+
+
+
+
 }
