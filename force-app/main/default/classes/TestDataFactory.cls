@@ -54,14 +54,43 @@ public with sharing class TestDataFactory {
         return jobApps;
     }
 
-    public static List<Event> createEvents(Integer numberOfEvents) {
+    public static List<Account> createAccounts(Integer numberOfAccounts) {
+        List<Account> testCompanies = new List<Account>();
+
+        for (Integer i = 0; i < numberOfAccounts; i++) {
+            testCompanies.add(new Account(
+                Name = 'Vandelay Industries' + i
+            ));
+        }
+        return testCompanies;
+    }
+
+    public static List<Event> createEvents(Integer numberOfEvents, List<Account> testAccounts) {
+        List<Account> testCompanies = testAccounts;
+
         List<Event> interviews = new List<Event>();
         Date tomorrow = Date.today().addDays(1);
         Datetime interviewStart = Datetime.newInstance(tomorrow, Time.newInstance(8, 0, 0, 0));
 
         for (Integer i = 0; i < numberOfEvents; i++) {
+            // Email should be created
             interviews.add(new Event(
                 Subject = 'Interview',
+                StartDateTime = interviewStart,
+                EndDateTime = interviewStart.addHours(1),
+                Company__c = testCompanies[0].Id,
+                Location = 'Zoom'
+            ));
+            // Email shouldn't be created
+            interviews.add(new Event(
+                Subject = 'Interview',
+                StartDateTime = interviewStart.addDays(1),
+                EndDateTime = interviewStart.addDays(1).addHours(1),
+                Location = 'Zoom'
+            ));
+            // Email shouldn't be created
+            interviews.add(new Event(
+                Subject = 'Meeting',
                 StartDateTime = interviewStart,
                 EndDateTime = interviewStart.addHours(1),
                 Location = 'Zoom'
@@ -69,12 +98,4 @@ public with sharing class TestDataFactory {
         }
         return interviews;
     }
-
-
-
-
-
-
-
-
 }
