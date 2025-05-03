@@ -15,11 +15,11 @@ public class EventTriggerHandler extends TriggerHandler{
     
     
     public override void beforeInsert() {
-        EventValidationHelper.validateNoOverlappingEvents(this.newEvents);
+        EventValidationHelper.validateNoOverlappingEvents(this.newEvents, true);
     }
 
     public override void beforeUpdate() {
-        EventValidationHelper.validateNoOverlappingEvents(this.newEvents);
+        EventValidationHelper.validateNoOverlappingEvents(this.newEvents, false);
     }
 
     
