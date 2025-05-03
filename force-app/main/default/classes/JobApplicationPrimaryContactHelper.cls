@@ -24,7 +24,7 @@ public static void setPrimaryContacts(List<Job_Application__c> jobApps) {
     Map<Id, List<Contact>> jobAppContactsMap = new Map<Id, List<Contact>>();
     // Get the Job App Ids and the related contact ids from junction object for any job app Id in the set and loop through each one
     for (Job_Application_Contact__c jac : [
-        SELECT Job_Application__c, Contact__c
+        SELECT Job_Application__c, Contact__r.Id
         FROM Job_Application_Contact__c
         WHERE Job_Application__c IN :jobAppIds
         ORDER BY CreatedDate ASC
