@@ -1,5 +1,5 @@
 public with sharing class EventValidationHelper {
-    public static void validateNoOverlappingEvents(List<Event> newEvents) {
+    public static void validateNoOverlappingEvents(List<Event> newEvents, Boolean isInsert) {
         // Gather all OwnerIds from the new events
         Set<Id> ownerIds = new Set<Id>();
         for (Event ev : newEvents) {
@@ -24,6 +24,10 @@ public with sharing class EventValidationHelper {
             }
         }        
 
+        // Exit early if no meaningful time range
+        if (minStart == null || maxEnd == null || ownerIds.isEmpty()) {
+            return;
+        }
         // Query existing events that may overlap (same owner, within date range)
         List<Event> existingEvents = [
             SELECT Id, OwnerId, StartDateTime, EndDateTime
@@ -42,10 +46,9 @@ public with sharing class EventValidationHelper {
             // For each existing event
             for (Event existingEv : existingEvents) {
                 // Skip self on update
-                if (!Trigger.isInsert && existingEv.Id == newEv.Id) {
+                if (!isInsert && existingEv.Id == newEv.Id) {
                     continue;
                 }
-
                 // If both events have the same owner AND they overlap in time, add an error to the new event saying it overlaps. Stop checking others
                 if (existingEv.OwnerId == newEv.OwnerId &&
                     newEv.StartDateTime < existingEv.EndDateTime &&
