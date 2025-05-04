@@ -9,7 +9,7 @@ public with sharing class StaleJobsTest {
 
         // Act
         Test.startTest();
-        StaleJobsHelper.cleanupStaleJobApplications();
+        new StaleJobsHelper().cleanupStaleJobApplications();
         Test.stopTest();
 
         // Assert
@@ -33,7 +33,7 @@ public with sharing class StaleJobsTest {
 
         // Act
         Test.startTest();
-        StaleJobsHelper.cleanupStaleJobApplications();
+        new StaleJobsHelper().cleanupStaleJobApplications();
         Test.stopTest();
 
         // Assert
@@ -56,7 +56,7 @@ public with sharing class StaleJobsTest {
 
         // Act
         Test.startTest();
-        StaleJobsHelper.cleanupStaleJobApplications();
+        new StaleJobsHelper().cleanupStaleJobApplications();
         Test.stopTest();
 
         // Assert

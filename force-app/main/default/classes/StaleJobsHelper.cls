@@ -1,6 +1,6 @@
 public with sharing class StaleJobsHelper {
 
-    public static void cleanupStaleJobApplications() {
+    public void cleanupStaleJobApplications() {
         // Query jobs that don't have a status of closed or accepted
         List<String> statuses = new List<String>{'Closed', 'Accepted'};
         // Query jobs that have a follow up date 30 days old or more
