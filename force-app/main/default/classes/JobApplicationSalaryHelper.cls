@@ -46,7 +46,7 @@ public with sharing class JobApplicationSalaryHelper {
     }
 
     private static void calculateTaxesAndNetSalary(Job_Application__c jobApp) {
-        // Return error is salary is negative
+        // Return error if salary is negative
         if (jobApp.Salary__c < 0) {
             jobApp.Salary__c.addError('Salary cannot be negative.');
             return;
@@ -78,10 +78,10 @@ public with sharing class JobApplicationSalaryHelper {
             }
             // Only recalculate if salary or other related field is changed
             if (jobApp.Salary__c != oldJobAppsMap.get(jobApp.Id).Salary__c || 
-                jobApp.Medicare_Tax__c == oldJobAppsMap.get(jobApp.Id).Medicare_Tax__c ||
-                jobApp.Social_Security_Tax__c == oldJobAppsMap.get(jobApp.Id).Social_Security_Tax__c ||
-                jobApp.Federal_Income_Tax__c == oldJobAppsMap.get(jobApp.Id).Federal_Income_Tax__c ||
-                jobApp.Net_Salary__c == oldJobAppsMap.get(jobApp.Id).Net_Salary__c) {
+                jobApp.Medicare_Tax__c != oldJobAppsMap.get(jobApp.Id).Medicare_Tax__c ||
+                jobApp.Social_Security_Tax__c != oldJobAppsMap.get(jobApp.Id).Social_Security_Tax__c ||
+                jobApp.Federal_Income_Tax__c != oldJobAppsMap.get(jobApp.Id).Federal_Income_Tax__c ||
+                jobApp.Net_Salary__c != oldJobAppsMap.get(jobApp.Id).Net_Salary__c) {
                 calculateTaxesAndNetSalary(jobApp);
             }
         }
