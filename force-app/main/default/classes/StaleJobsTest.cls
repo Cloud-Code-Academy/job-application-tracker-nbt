@@ -1,5 +1,23 @@
 @IsTest
 public with sharing class StaleJobsTest {
+
+    @IsTest
+    static void handleStaleJobsCleanup_testSchedulable_expectSuccess() {
+        // Arrange
+            // No data to arrange
+        
+        // Act
+        Test.startTest();
+        String sch = '0 0 7 * * ?';
+        String jobId = System.schedule('Stale Jobs Cleanup', sch, new StaleJobsSchedulable());
+        Test.stopTest();
+        
+        // Assert
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
+
+        System.assertEquals(sch, ct.CronExpression, 'Cron Expression should match');
+        System.assertEquals(0, ct.TimesTriggered, 'Cron Expression should not have triggered');
+    }
     
     @IsTest
     static void handleStaleJobsCleanup_changeStatusToClosedOnOldJobApps_expectSuccess() {
