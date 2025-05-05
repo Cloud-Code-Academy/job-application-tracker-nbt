@@ -3,20 +3,8 @@
     font-size: medium;
 }
 
-.salaryPercentage {
-    color: green;
-    font-weight: bold;
-    font-size: medium;
-}
-
 .salaryResultText {
     color: green;
-    font-weight: bold;
-    font-size: medium;
-}
-
-.taxPercentage {
-    color: red;
     font-weight: bold;
     font-size: medium;
 }

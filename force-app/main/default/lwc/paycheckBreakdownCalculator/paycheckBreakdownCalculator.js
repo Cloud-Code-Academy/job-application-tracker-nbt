@@ -10,6 +10,7 @@ const federalTaxRates = Object.freeze([
     {lowerBound: 250525, upperBound: 626350, rate: 0.35},
     {lowerBound: 626350, upperBound: Infinity, rate: 0.37},
 ]);
+
 // Initialize other constant variables
 const socialSecurityTaxRate = 0.0620;
 const medicareTaxRate = 0.0145;
@@ -17,19 +18,20 @@ const standardDeduction = 15000;
 
 export default class PaycheckBreakdownCalculator extends LightningElement {
     // These values are what are shown initially on the LWC
+    
     // Initialize salary variables connected to HTML
     grossSalary = null;  
     annualSalary = null;
-    annualSalaryPercentage = null;
     sixMonthsSalary = null;
     monthlySalary = null;
     biWeeklySalary = null;
+
     // Initialize tax variables connected to HTML
     totalTax = null;
-    totalTaxPercentage = null;
     federalIncomeTax = null;
     socialSecurityTax = null;
     medicareTax = null;
+
     // Hide results to start
     showResults = false;
 
@@ -47,7 +49,7 @@ export default class PaycheckBreakdownCalculator extends LightningElement {
         let adjustedGrossSalary = this.grossSalary - standardDeduction;
 
         // Loop through each federal tax bracket to calculate the tax for necessary ranges
-        for (let taxBracket of federalTaxRates) {
+        for (const taxBracket of federalTaxRates) {
             if (adjustedGrossSalary > taxBracket.lowerBound) {
                 federalTaxAmount = (Math.min(adjustedGrossSalary, taxBracket.upperBound) - taxBracket.lowerBound) * taxBracket.rate;
                 this.federalIncomeTax += federalTaxAmount;
@@ -59,12 +61,14 @@ export default class PaycheckBreakdownCalculator extends LightningElement {
         this.socialSecurityTax = this.grossSalary * socialSecurityTaxRate;
         this.totalTax = this.federalIncomeTax + this.medicareTax + this.socialSecurityTax;
         this.totalTaxPercentage = this.totalTax / this.grossSalary;
+
         // Update salary variables
         this.annualSalary = this.grossSalary - this.federalIncomeTax - this.medicareTax - this.socialSecurityTax;
         this.annualSalaryPercentage = this.annualSalary / this.grossSalary;
         this.sixMonthsSalary = this.annualSalary / 2;
         this.monthlySalary = this.annualSalary / 12;
         this.biWeeklySalary = this.annualSalary / 26;
+        
         // Show results when 'Calculate' button is clicked
         this.showResults = true;
     }
