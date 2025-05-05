@@ -40,7 +40,7 @@ private class EventValidationHelperTest {
 }
 
     @isTest
-    private static void validateNoOverlappingEvents_noOverlappingEventsNeedErrorMessage_expectSuccess() {
+    private static void validateNoOverlappingEvents_noOverlappingEvents_expectSuccess() {
     // Create and insert initial event
     Event initialEvent = new Event(
         Subject = 'Initial Event',

@@ -27,9 +27,6 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
     public override void afterUpdate() {    
         TaskCreationHelper.createTasks(this.newJobApplications, this.oldJobApplicationMap, true); // Compare old and new status
     }
-    public override void afterUndelete() {    
-        TaskCreationHelper.createTasks(this.newJobApplications, this.oldJobApplicationMap, false); // No need to compare old and new — just create tasks
-    }
-
+    
 
 }

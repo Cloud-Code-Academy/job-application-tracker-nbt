@@ -76,12 +76,14 @@ public with sharing class TaskCreationHelper {
     
         // Create new task records
         for (Job_Application__c jobApp : jobAppList) {
+            
             List<String> subjects = taskMap.get(jobApp.Status__c);
     
             if (subjects != null) {
                 for (String subject : subjects) {
                     tasks.add(new Task(
                         Subject = subject,
+                        OwnerId = jobApp.OwnerId,
                         Priority = 'Normal',
                         Status = 'Not Started',
                         ActivityDate = dueDate,
