@@ -18,5 +18,4 @@
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>Job_Application_Tracker_UtilityBar</utilityBar>
 </CustomApplication>
